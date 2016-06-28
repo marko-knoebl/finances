@@ -49,24 +49,13 @@
         rerender();
       };
 
-      var getBalance = function() {
-        var balance = 0;
-        dataset.transactions.forEach(function(transaction) {
-          if (transaction.destination === 'main') {
-            balance += transaction.amount;
-          } else if (transaction.origin === 'main') {
-            balance -= transaction.amount;
-          }
-        });
-        return balance;
-      };
-
       var rerender = function() {
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
             <div>
-              Your balance is: {getBalance().toFixed(2)}
+              Your balance is: {dataset.getBalance('main').toFixed(2)}<br/>
+              World's balance is: {dataset.getBalance('world').toFixed(2)}
             </div>
             <div>
               <h2>Transactions</h2>
@@ -81,6 +70,8 @@
                       </td>
                       <td>{transaction.details}</td>
                       <td>{transaction.date}</td>
+                      <td>{transaction.origin}</td>
+                      <td>{transaction.destination}</td>
                     </tr>;
                   })}
                 </tbody>
