@@ -15,7 +15,12 @@
 
     <script type="text/babel">
       var dataset = new konto.Dataset();
-      dataset.addAccount({id: 'main', openDate: '2016-06-27'});
+      dataset.addAccount({id: 'main', openDate: '2010-01-01'});
+      dataset.addAccount({id: 'cash', openDate: '2010-01-01'});
+
+      var uiData = {
+        activeAccount: 'main',
+      };
 
       var addTransaction = function() {
         var amount = parseFloat(document.querySelector('#amount_input').value);
@@ -26,6 +31,8 @@
           var origin = 'main';
           var destination = 'world';
         }
+        origin = document.querySelector('#origin_account_select').value;
+        destination = document.querySelector('#destination_account_select').value;
         var details = document.querySelector('#details_input').value;
         var date = document.querySelector('#date_input').value;
         dataset.addTransaction({
@@ -49,30 +56,48 @@
         rerender();
       };
 
+      var onAccountChange = function(event) {
+        uiData.activeAccount = event.target.value;
+        rerender();
+      };
+
       var rerender = function() {
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
+            <select name="account" value={uiData.activeAccount} onChange={onAccountChange}>
+              {dataset.accounts.map(function(account) {
+                return <option value={account.id}>{account.id}</option>
+              })}
+            </select>
             <div>
-              Your balance is: {dataset.getBalance('main').toFixed(2)}<br/>
-              World's balance is: {dataset.getBalance('world').toFixed(2)}
+              Your account balance is: {dataset.getBalance('main').toFixed(2)}<br/>
+              Your cash balance is: {dataset.getBalance('cash').toFixed(2)}<br/>
+              Worlds balance is: {dataset.getBalance('world').toFixed(2)}
             </div>
             <div>
               <h2>Transactions</h2>
               {dataset.transactions.length === 0 ? 'no transactions' : ''}
               <table>
                 <tbody>
-                  {dataset.transactions.map(function(transaction) {
-                    return <tr>
-                      <td>
-                        {transaction.origin==='main'?'-':''}
-                        {transaction.amount.toFixed(2)}
-                      </td>
-                      <td>{transaction.details}</td>
-                      <td>{transaction.date}</td>
-                      <td>{transaction.origin}</td>
-                      <td>{transaction.destination}</td>
-                    </tr>;
+                  {dataset.getTransactionsByAccount(uiData.activeAccount).map(function(transaction) {
+                    if (transaction.origin === uiData.activeAccount) {
+                      return <tr>
+                        <td>-{transaction.amount.toFixed(2)}</td>
+                        <td>{transaction.details}</td>
+                        <td>{transaction.date}</td>
+                        <td>{transaction.origin}</td>
+                        <td>{transaction.destination}</td>
+                      </tr>;
+                    } else {
+                      return <tr>
+                        <td>{transaction.amount.toFixed(2)}</td>
+                        <td>{transaction.details}</td>
+                        <td>{transaction.date}</td>
+                        <td>{transaction.origin}</td>
+                        <td>{transaction.destination}</td>
+                      </tr>;
+                    }
                   })}
                 </tbody>
               </table>
@@ -81,6 +106,16 @@
               <input id="amount_input" type="number" step="0.01"></input>
               <input id="details_input"></input>
               <input id="date_input" type="date"></input>
+              <select id="origin_account_select" name="origin_account" value={uiData.originAccount}>
+                {dataset.accounts.map(function(account) {
+                  return <option value={account.id}>{account.id}</option>
+                })}
+              </select>
+              <select id="destination_account_select" name="destination_account" value={uiData.destinationAccount}>
+                {dataset.accounts.map(function(account) {
+                  return <option value={account.id}>{account.id}</option>
+                })}
+              </select>
               <button onClick={addTransaction}>Add Transaction</button>
             </div>
             <button onClick={addRandomTransactionData}>Add random Transactions</button>
