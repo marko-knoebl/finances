@@ -121,7 +121,7 @@
               {dataset.transactions.length === 0 ? 'no transactions' : ''}
               <table>
                 <tbody>
-                  {dataset.getTransactionsByAccount(uiData.activeAccount).map(function(transaction) {
+                  {dataset.getTransactionsByAccount(uiData.activeAccount).reverse().map(function(transaction) {
                     if (transaction.origin === uiData.activeAccount) {
                       return <tr>
                         <td>-{transaction.amount.toFixed(2)}</td>
