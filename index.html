@@ -5,9 +5,11 @@
     <meta charset="utf-8">
     <title>Finances</title>
     <script src="node_modules/kontojs/konto.js"></script>
+    <script src="node_modules/kontojs/konto_csvimport.js"></script>
     <script src="https://fb.me/react-15.1.0.js"></script>
     <script src="https://fb.me/react-dom-15.1.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+    <script src="node_modules/papaparse/papaparse.js"></script>
   </head>
 
   <body>
@@ -20,6 +22,7 @@
 
       var uiData = {
         activeAccount: 'main',
+        importActive: '',
       };
 
       var addTransaction = function() {
@@ -61,10 +64,48 @@
         rerender();
       };
 
+      var onCsvFileChange = function(event) {
+        var csvFile = document.querySelector('#csv_input').files[0];
+        var encoding = konto.csvImportConfig[uiData.importActive].encoding;
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var transactionData = konto.csvToKonto(event.target.result, uiData.importActive);
+          transactionData.forEach(function(transaction) {
+            if (transaction.amount < 0) {
+              transaction.origin = 'main';
+              transaction.destination = 'world';
+              transaction.amount = Math.abs(transaction.amount);
+            } else {
+              transaction.origin = 'world';
+              transaction.destination = 'main';
+            }
+            dataset.addTransaction(transaction);
+          });
+          uiData.importActive = '';
+          rerender();
+        };
+        reader.readAsText(csvFile, encoding);
+      };
+
+      var activateImport = function(accountType) {
+        uiData.importActive = accountType;
+        rerender();
+      };
+
       var rerender = function() {
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
+            <div>
+              <button onClick={function() {activateImport('bawagpsk')}}>Import BAWAG PSK</button>
+              <button onClick={function() {activateImport('erstebank')}}>Import Erste Bank</button>
+              <button onClick={function() {activateImport('raiffeisen')}}>Import Raiffeisen</button>
+              <button onClick={function() {activateImport('easybank')}}>Import easybank</button>
+              <button onClick={function() {activateImport('number26')}}>Import Number26</button>
+              <button onClick={function() {activateImport('hellobank')}}>Import Hello Bank</button>
+              <button onClick={function() {activateImport('paypal')}}>Import PayPal</button><br/>
+              {uiData.importActive?<input type="file" id="csv_input" onChange={onCsvFileChange}/>:''}
+            </div>
             <select name="account" value={uiData.activeAccount} onChange={onAccountChange}>
               {dataset.accounts.map(function(account) {
                 return <option value={account.id}>{account.id}</option>
