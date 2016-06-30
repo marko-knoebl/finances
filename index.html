@@ -64,7 +64,7 @@
         rerender();
       };
 
-      var onCsvFileChange = function(event) {
+      var loadCsvFile = function(event) {
         var csvFile = document.querySelector('#csv_input').files[0];
         var encoding = konto.csvImportConfig[uiData.importActive].encoding;
         var reader = new FileReader();
@@ -92,6 +92,15 @@
         rerender();
       };
 
+      var inputForm = function(bankName) {
+        return <form>
+          <label for="current_balance_input">current balance:</label>
+          <input type="number" step="0.01" id="current_balance_input"/><br/>
+          <input type="file" id="csv_input"/><br/>
+          <button type="button" onClick={loadCsvFile}>Load CSV</button>
+        </form>
+      };
+
       var rerender = function() {
         ReactDOM.render(
           <div>
@@ -104,7 +113,7 @@
               <button onClick={function() {activateImport('number26')}}>Import Number26</button>
               <button onClick={function() {activateImport('hellobank')}}>Import Hello Bank</button>
               <button onClick={function() {activateImport('paypal')}}>Import PayPal</button><br/>
-              {uiData.importActive?<input type="file" id="csv_input" onChange={onCsvFileChange}/>:''}
+              {uiData.importActive?inputForm(uiData.importActive):''}
             </div>
             <select name="account" value={uiData.activeAccount} onChange={onAccountChange}>
               {dataset.accounts.map(function(account) {
