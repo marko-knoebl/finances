@@ -66,6 +66,7 @@
 
       var loadCsvFile = function(event) {
         var csvFile = document.querySelector('#csv_input').files[0];
+        var currentBalance = parseFloat(document.querySelector('#current_balance_input').value);
         var encoding = konto.csvImportConfig[uiData.importActive].encoding;
         var reader = new FileReader();
         reader.onload = function(event) {
@@ -81,6 +82,7 @@
             }
             dataset.addTransaction(transaction);
           });
+          dataset.setCurrentAccountBalance('main', currentBalance);
           uiData.importActive = '';
           rerender();
         };
