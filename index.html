@@ -38,6 +38,7 @@
       var dataset;
     </script>
     <script src="add-account-component.js"></script>
+    <script src="active-account-details.js"></script>
     <script type="text/babel">
       dataset = new konto.Dataset();
       dataset.addAccount({id: 'main', openDate: '2010-01-01'});
@@ -82,43 +83,9 @@
         rerender();
       };
 
-      var loadCsvFile = function(event) {
-        var csvFile = document.querySelector('#csv_input').files[0];
-        var currentBalance = parseFloat(document.querySelector('#current_balance_input').value);
-        var encoding = konto.csvImportConfig[uiData.importActive].encoding;
-        var reader = new FileReader();
-        reader.onload = function(event) {
-          var transactionData = konto.csvToKonto(event.target.result, uiData.importActive);
-          transactionData.forEach(function(transaction) {
-            if (transaction.amount < 0) {
-              transaction.origin = 'main';
-              transaction.destination = 'world';
-              transaction.amount = Math.abs(transaction.amount);
-            } else {
-              transaction.origin = 'world';
-              transaction.destination = 'main';
-            }
-            dataset.addTransaction(transaction);
-          });
-          dataset.setCurrentAccountBalance('main', currentBalance);
-          uiData.importActive = '';
-          rerender();
-        };
-        reader.readAsText(csvFile, encoding);
-      };
-
       var activateImport = function(accountType) {
         uiData.importActive = accountType;
         rerender();
-      };
-
-      var inputForm = function(bankName) {
-        return <form>
-          <label for="current_balance_input">current balance:</label>
-          <input type="number" step="0.01" id="current_balance_input"/><br/>
-          <input type="file" id="csv_input"/><br/>
-          <button type="button" onClick={loadCsvFile}>Load CSV</button>
-        </form>
       };
 
       rerender = function() {
@@ -128,17 +95,6 @@
             <div>
               <button onClick={showAddAccountDialog}>Add bank account</button>
               {uiData.addAccount.active ? addBankAccountUi(konto.csvImportConfig) : ''}
-            </div>
-            <div>
-              <button onClick={function() {activateImport('bawagpsk')}}>Import BAWAG PSK</button>
-              <button onClick={function() {activateImport('erstebank')}}>Import Erste Bank</button>
-              <button onClick={function() {activateImport('raiffeisen')}}>Import Raiffeisen</button>
-              <button onClick={function() {activateImport('easybank')}}>Import easybank</button>
-              <button onClick={function() {activateImport('number26')}}>Import Number26</button>
-              <button onClick={function() {activateImport('number26-de')}}>Import Number26 (de)</button>
-              <button onClick={function() {activateImport('hellobank')}}>Import Hello Bank</button>
-              <button onClick={function() {activateImport('paypal')}}>Import PayPal</button><br/>
-              {uiData.importActive?inputForm(uiData.importActive):''}
             </div>
             <select name="account" value={uiData.activeAccount} onChange={onAccountChange}>
               {dataset.accounts.map(function(account) {
@@ -194,6 +150,11 @@
               <button onClick={addTransaction}>Add Transaction</button>
             </div>
             <button onClick={addRandomTransactionData}>Add random Transactions</button>
+            <div>
+              <h2>Active Account</h2>
+              details: {JSON.stringify(dataset.getAccount({id: uiData.activeAccount}))}<br/>
+              {activeAccountDetails(uiData.activeAccount)}
+            </div>
           </div>,
           document.getElementById('finances-app')
         );
