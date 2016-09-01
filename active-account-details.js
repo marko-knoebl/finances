@@ -10,7 +10,8 @@ var activeAccountDetails = function(activeAccount) {
     rerender();
   };
   return React.createElement(
-    'div', {}, 
+    'div', {},
+    'details:',
     React.createElement('div', {}, 'id: '+activeAccountObject.id),
     csvImportPossible ? React.createElement('button', {onClick: activateImport}, 'Import CSV') : '',
     uiData.importActive ? csvImportForm(uiData.importActive) : ''
