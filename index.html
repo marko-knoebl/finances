@@ -25,10 +25,14 @@
       
       var uiData = {
         activeAccount: 'main',
-        // is the "add account" ui visible?
-        addAccountActive: false,
-        addAccountType: 'bawagpsk',
         importActive: '',
+        activeAccount: 'world',
+        addAccount: {
+          // is the "add account" ui visible?
+          active: false,
+          type: 'bawagpsk',
+          name: 'Bawag PSK'
+        }
       };
       var rerender;
       var dataset;
@@ -123,7 +127,7 @@
             <h1>Finances</h1>
             <div>
               <button onClick={showAddAccountDialog}>Add bank account</button>
-              {uiData.addAccountActive ? addBankAccountUi(konto.csvImportConfig) : ''}
+              {uiData.addAccount.active ? addBankAccountUi(konto.csvImportConfig) : ''}
             </div>
             <div>
               <button onClick={function() {activateImport('bawagpsk')}}>Import BAWAG PSK</button>
