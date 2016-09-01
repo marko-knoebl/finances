@@ -12,17 +12,32 @@
   </head>
 
   <body>
+
+    <style type="text/css">
+      form {
+        border: 1px solid black;
+      }
+    </style>
+
     <div id="finances-app"></div>
-
-    <script type="text/babel">
-      var dataset = new konto.Dataset();
-      dataset.addAccount({id: 'main', openDate: '2010-01-01'});
-      dataset.addAccount({id: 'cash', openDate: '2010-01-01'});
-
+    <script>
+      // global scope
+      
       var uiData = {
         activeAccount: 'main',
+        // is the "add account" ui visible?
+        addAccountActive: false,
+        addAccountType: 'bawagpsk',
         importActive: '',
       };
+      var rerender;
+      var dataset;
+    </script>
+    <script src="add-account-component.js"></script>
+    <script type="text/babel">
+      dataset = new konto.Dataset();
+      dataset.addAccount({id: 'main', openDate: '2010-01-01'});
+      dataset.addAccount({id: 'cash', openDate: '2010-01-01'});
 
       var addTransaction = function() {
         var amount = parseFloat(document.querySelector('#amount_input').value);
@@ -102,10 +117,14 @@
         </form>
       };
 
-      var rerender = function() {
+      rerender = function() {
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
+            <div>
+              <button onClick={showAddAccountDialog}>Add bank account</button>
+              {uiData.addAccountActive ? addBankAccountUi(konto.csvImportConfig) : ''}
+            </div>
             <div>
               <button onClick={function() {activateImport('bawagpsk')}}>Import BAWAG PSK</button>
               <button onClick={function() {activateImport('erstebank')}}>Import Erste Bank</button>
