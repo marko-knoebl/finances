@@ -39,8 +39,8 @@ var addTransactionComponent = function() {
         })
       )
     ),
-    React.createElement('button', {onClick: hideAddTransactionDialog}, 'Cancel'),
-    React.createElement('button', {onClick: addTransaction}, 'Add Transaction')
+    React.createElement('button', {onClick: hideAddTransactionDialog, type:'button'}, 'Cancel'),
+    React.createElement('button', {onClick: addTransaction, type: 'button'}, 'Add Transaction')
   );
 };
 
@@ -61,5 +61,6 @@ var addTransaction = function() {
   document.querySelector('#amount_input').value = '0';
   document.querySelector('#details_input').value = '';
   document.querySelector('#date_input').value = new Date().toISOString().slice(0, 10);
+  uiData.addTransaction.active = false;
   rerender();
 };

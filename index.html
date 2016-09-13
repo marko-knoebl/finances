@@ -9,6 +9,10 @@
     <script src="https://fb.me/react-dom-15.1.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script src="node_modules/papaparse/papaparse.js"></script>
+    <script src="node_modules/react-nvd3/node_modules/d3/d3.js"></script>
+    <script src="node_modules/react-nvd3/node_modules/nvd3/build/nv.d3.js"></script>
+    <script src="node_modules/react-nvd3/dist/react-nvd3.js"></script>
+    <link rel="stylesheet" href="node_modules/react-nvd3/node_modules/nvd3/build/nv.d3.css">
   </head>
 
   <body>
@@ -49,6 +53,7 @@
     <script src="transaction-list.js"></script>
     <script src="account-overview.js"></script>
     <script src="add-transaction.js"></script>
+    <script src="daily-balance-chart.js"></script>
     <script type="text/babel">
       dataset = new konto.Dataset();
       dataset.addAccount({id: 'main', openDate: '2010-01-01'});
@@ -76,6 +81,7 @@
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
+            {dailyBalanceChart()}
             {accountOverview()}
             <div>
               <button onClick={showAddAccountDialog}>Add bank account</button>
