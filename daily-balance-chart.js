@@ -1,10 +1,15 @@
+var inverseBalances = function(balanceList) {
+  return balanceList.map(function(element) {
+    return {date: element.date, balance: -element.balance}
+  });
+};
+
 var dailyBalanceChart = function() {
   return React.createElement(NVD3Chart, {
-    id: 'yChart',
-    type: 'stackedAreaChart',
+    type: 'lineChart',
     datum: [{
-      key: 'NA',
-      values: dataset.getDailyBalances('cash')
+      key: 'Total assets',
+      values: inverseBalances(dataset.getDailyBalances('world'))
     }],
     x: function(d) {return new Date(d.date)},
     y: 'balance',
@@ -15,7 +20,10 @@ var dailyBalanceChart = function() {
         },
         axisLabel: 'Date'
       },
-      yAxis: {axisLabel: 'Balance'}
+      yAxis: {
+        tickFormat: d3.format('.2f'),
+        axisLabel: 'Balance'
+      }
     }
   });
 }

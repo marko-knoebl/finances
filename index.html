@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <title>Finances</title>
-    <script src="https://rawgit.com/marko-knoebl/kontojs/master/konto.js"></script>
+    <script src="node_modules/kontojs/konto.js"></script>
     <script src="https://fb.me/react-15.1.0.js"></script>
     <script src="https://fb.me/react-dom-15.1.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
@@ -20,6 +20,11 @@
     <style type="text/css">
       form {
         border: 1px solid black;
+      }
+    </style>
+    <style type="text/css">
+      .nv-chart {
+        height: 100%;
       }
     </style>
 
@@ -81,7 +86,9 @@
         ReactDOM.render(
           <div>
             <h1>Finances</h1>
-            {dailyBalanceChart()}
+            <div style={{height: '400px'}}>
+              {dailyBalanceChart()}
+            </div>
             {accountOverview()}
             <div>
               <button onClick={showAddAccountDialog}>Add bank account</button>
