@@ -82,6 +82,24 @@
         rerender();
       };
 
+      var saveToLocalStorage = function() {
+        localStorage.finString = JSON.stringify(dataset);
+        console.log(localStorage.finString);
+      };
+
+      var loadFromLocalStorage = function() {
+        if (!localStorage.finString) {
+          return;
+        }
+        dataset = new konto.Dataset();
+        Object.assign(dataset, JSON.parse(localStorage.finString));
+        rerender();
+      };
+
+      var clearLocalStorage = function() {
+        localStorage.removeItem('finString');
+      }
+
       rerender = function() {
         ReactDOM.render(
           <div>
@@ -103,6 +121,9 @@
             <div>
               {uiData.accountDetails.active?activeAccountComponent(uiData.accountDetails.activeAccount):''}
             </div>
+            <button onClick={saveToLocalStorage}>Save Data</button>
+            <button onClick={loadFromLocalStorage}>Load Data</button>
+            <button onClick={clearLocalStorage}>Clear Data</button>
           </div>,
           document.getElementById('finances-app')
         );
